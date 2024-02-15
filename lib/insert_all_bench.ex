@@ -3,19 +3,19 @@ defmodule InsertAllBench do
   Documentation for `InsertAllBench`.
   """
 
-  # import Ecto.Query
+  import Ecto.Query
 
   def setup do
     Repo.query!("CREATE TABLE IF NOT EXISTS users (id int, name int)")
     Repo.query!("TRUNCATE TABLE users")
   end
 
-  def run1(rows) do
+  def insert_all(rows) do
     setup()
     :timer.tc(fn -> Repo.insert_all("users", rows) end)
   end
 
-  def run2(rows) do
+  def alt_insert_all(rows) do
     setup()
 
     {ids, names} =
@@ -27,18 +27,13 @@ defmodule InsertAllBench do
       end)
       |> Enum.unzip()
 
-    # q =
-    #   from(i in fragment("unnest(?::int[],?::int[]) AS input(id,name)", ^ids, ^names),
-    #     select: %{id: i.id, name: i.name}
-    #   )
+    q =
+      "input"
+      |> with_cte("input",
+        as: fragment("select unnest(?::int[]) as id, unnest(?::int[]) as name", ^ids, ^names)
+      )
+      |> select([i], %{id: i.id, name: i.name})
 
-    # :timer.tc(fn -> Repo.insert_all("users", q) end)
-
-    :timer.tc(fn ->
-      Repo.query!("INSERT INTO users(id,name) (SELECT * FROM unnest($1::int[],$2::int[]))", [
-        ids,
-        names
-      ])
-    end)
+    :timer.tc(fn -> Repo.insert_all("users", q) end)
   end
 end

@@ -22,7 +22,8 @@ defmodule InsertAllBench.MixProject do
   # Run "mix help deps" to learn about dependencies.
   defp deps do
     [
-      {:ecto_sql, "~> 3.11"},
+      # {:ecto_sql, github: "ruslandoga/ecto_sql", branch: "alt-insert_all"},
+      {:ecto_sql, "~> 3.11.1"},
       {:postgrex, ">= 0.0.0"}
     ]
   end

@@ -24,7 +24,8 @@ defmodule InsertAllBench.MixProject do
     [
       # {:ecto_sql, github: "ruslandoga/ecto_sql", branch: "alt-insert_all"},
       {:ecto_sql, "~> 3.11.1"},
-      {:postgrex, ">= 0.0.0"}
+      {:postgrex, ">= 0.0.0"},
+      {:jason, ">= 0.0.0"}
     ]
   end
 end
